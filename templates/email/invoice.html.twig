@@ -1,0 +1,255 @@
+<html>
+
+<head>
+    <style>
+        .clearfix:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        #fact-infos {
+            float: right;
+            text-align: left;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        #logo {
+            float: left;
+            margin-bottom: 10px;
+        }
+
+        #logo img {
+            height: 70px;
+        }
+
+        #logo div,
+        #fact-infos div {
+            white-space: nowrap;
+        }
+
+        h1 {
+            border-top: 1px solid #5D6975;
+            border-bottom: 1px solid #5D6975;
+            color: #5D6975;
+            font-size: 15px;
+            line-height: 1.4em;
+            font-weight: normal;
+            text-align: center;
+            margin: 15px 0 20px 0;
+        }
+
+        #project {
+            float: right;
+            font-size: 15px;
+        }
+
+        #project span {
+            color: #5D6975;
+            text-align: right;
+            width: 52px;
+            margin-right: 10px;
+            display: inline-block;
+            font-size: 0.8em;
+        }
+
+        #company {
+            float: left;
+            text-align: left;
+            font-size: 15px;
+        }
+
+        #project div,
+        #company div {
+            white-space: nowrap;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        table tr:nth-child(2n-1) td {
+            background: #F5F5F5;
+        }
+
+        table th,
+        table td {
+            text-align: center;
+        }
+
+        table th {
+            padding: 5px 20px;
+            color: #5D6975;
+            border-bottom: 1px solid #C1CED9;
+            white-space: nowrap;
+            font-weight: normal;
+        }
+
+        table .service,
+        table .desc {
+            text-align: left;
+        }
+
+        table td {
+            padding: 20px;
+            text-align: right;
+        }
+
+        table tbody tr td {
+            font-size: 12px;
+        }
+
+        table td.service,
+        table td.desc {
+            vertical-align: top;
+        }
+
+        table td.unit,
+        table td.qty,
+        table td.total {
+            font-size: 12px;
+        }
+
+        table td.grand {
+            border-top: 1px solid #5D6975;
+            ;
+        }
+
+        #notices {
+            margin-top: 50px;
+        }
+
+        #notices .notice {
+            margin-top: 50px;
+            color: #5D6975;
+            font-size: 1.2em;
+        }
+
+        @page {
+            margin: 180px 50px;
+        }
+
+        #header {
+            position: fixed;
+            left: 0px;
+            top: -170px;
+            right: 0px;
+            height: 150px;
+        }
+
+        #content {
+            margin-top: 150px 0 0 10px;
+        }
+
+        #footer {
+            position: fixed;
+            left: 0px;
+            bottom: 0;
+            right: 0px;
+            text-align: center;
+        }
+    </style>
+
+<body>
+    <div id="header">
+        <h1>FACTURE</h1>
+        <div class="clearfix">
+            <div id="logo">
+                {% if dataInvoice.user.userInfos != null%}
+                <img src="{{ absolute_url(asset('/uploads/'~ dataInvoice.user.userInfos.logo)) }}"
+                    style="width: 150px; max-width: 300px; height: 100px;" />
+                {% else %}
+                <img src="{{asset('asset/img/logo_exemple.jpg')}}" style="width: 100%; max-width: 300px" />
+                {%endif%}
+            </div>
+            <div id="fact-infos">
+                <div>Numéro: {{dataInvoice.ref}}</div>
+                <div>Date de facture: {{dataInvoice.date}}</div>
+                <div>Date d'échéance: {{dataInvoice.echeance}}</div>
+            </div>
+        </div>
+    </div>
+    <div id="company" class="clearfix">
+        <div>{{dataInvoice.user.userInfos.nomEntreprise}}</div>
+        <div>{{dataInvoice.user.userInfos.codePostal}},
+            {{dataInvoice.user.userInfos.ville}}</div>
+        <div>{{dataInvoice.user.userInfos.pays}}</div>
+        <div><a
+                href=" {{dataInvoice.user.userInfos.emailEntreprise}}">{{dataInvoice.user.userInfos.emailEntreprise}}</a>
+        </div>
+    </div>
+    <div id="project">
+        <div><span>CLIENT</span>{{dataInvoice.clent.nomClient}}</div>
+        <div><span>ADDRESS</span>{{dataInvoice.clent.adresseFactureClient}}</div>
+        <div><span>TEL.</span>{{dataInvoice.clent.tel}}</div>
+        <div><span>EMAIL</span> <a href="mailto:john@example.com">{{dataInvoice.clent.email}}</a></div>
+    </div>
+    <div id="footer">
+        {% if dataInvoice.user.userInfos %}
+        <p>{{dataInvoice.user.userInfos.nomEntreprise}} / {{dataInvoice.user.userInfos.siteWeb}}</p>
+        <p>{{dataInvoice.user.userInfos.statJuridique}}-SIRET:{{dataInvoice.user.userInfos.numSiret}}
+            -Num TVA:{{dataInvoice.user.userInfos.numTVA}}
+        </p>
+
+        {% endif %}
+    </div>
+    <div id="content">
+        <table>
+            <thead>
+                <tr>
+                    <th class="desc">Description</th>
+                    <th class="desc">Qté.</th>
+                    <th>Prix Unit.</th>
+                    <th>Rémise</th>
+                    <th>TVA</th>
+                    <th>Total HT</th>
+                    <th>Total TTC</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in dataInvoice.ligneFacture %}
+                <tr>
+                    <td class="desc">{{data.designation}}</td>
+                    <td class="unit">{{data.qt}}</td>
+                    <td class="qty">{{data.pu}} €</td>
+                    <td class="total">{%if data.remise > 0 %}
+                        {{data.remise}}%
+                        {%else%}
+                        -
+                        {%endif%}</td>
+                    <td class="total">
+                        {%if data.tva > 0 %}
+                        {{data.tva}}%
+                        {%else%}
+                        -
+                        {%endif%}
+                    </td>
+                    <td class="total">{{data.totalHT}} €</td>
+                    <td class="total">{{data.totalTTC}} €</td>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+        <div class="row" style="display: flex; margin-top: 100px;">
+            <div class="column" style="width: 70%; float: left;">
+                <div id="notices">
+                    <div>NOTICE:</div>
+                    <div class="notice">{{dataInvoice.note}}</div>
+                </div>
+            </div>
+            <div class="column" style="width: 30%; float: right;">
+                <div class="" style="padding: 2px; background-color: #5D6975;">Total rémise : {{totalRemise}} €</div>
+                <div class="" style="padding: 2px;">Total HT : <span style="text-align: right;">{{totalHT}} €</span>
+                </div>
+                <div class="" style="padding: 2px; background-color: #5D6975;">TVA :{{totalTVA}} €</div>
+                <div class="">Net à payé: {{totalTTC}} €</div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

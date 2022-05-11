@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="fr" target-language="fr" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="lpzL089" resname="Email">
+        <source>Email</source>
+        <target>E-mail</target>
+      </trans-unit>
+      <trans-unit id="8jB7rxy" resname="Serial number">
+        <source>Serial number</source>
+        <target>Numéro de serie</target>
+      </trans-unit>
+      <trans-unit id="nEPkLYJ" resname="Phone 1">
+        <source>Phone 1</source>
+        <target>Portable 1</target>
+      </trans-unit>
+      <trans-unit id="uXiCzoB" resname="Phone 2">
+        <source>Phone 2</source>
+        <target>Portable 2</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

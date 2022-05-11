@@ -1,0 +1,175 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Hello InvoiceController!{% endblock %}
+
+{% block body %}
+<style>
+
+</style>
+<div class="container-fluid" id="getInvoice" data-getInvoice="{{path('factures')}}">
+    <div class="row mt-2" id="listFacture">
+        <div class="col-lg-2 col-md-3 col-sm-4">
+            <div class="d-md-flex justify-content-md-start p-2">
+                <div class="card">
+                    <div class="card-body d-flex justify-content-between py-1">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text border-0 px-1" id="basic-addon2"><i
+                                    class="fas fa-search fa-sm" style="color: #939597;"></i></span>
+                            <input type="text" id="inputInvoice" onkeyup="searcheInvoice()"
+                                data-path="{{path('searche_invoice')}}"
+                                class="form-control form-control-sm form-control-lg rounded" style="color: #F70081;"
+                                placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-8">
+            <div class="d-flex p-2">
+                <input type="date" value="{{'now'|date('YYYY-mm-dd') }}" class="form-control-sm"
+                    data-path="{{path('filter-date')}}" id="filter-date-invoice">au
+                <input type="date" value='{{"now"|date("YYYY-mm-dd") }}' class="form-control-sm"
+                    data-path="{{path('filter-date')}}" id="filter-date-invoice2">
+                <select id="filter-etat" class="form-control-sm mx-2">
+                    <option value="">filtrer par etat</option>
+                    <option value="0">Bruillons</option>
+                    <option value="1">Enregistrer</option>
+                    <option value="2">Envoyer</option>
+                    <option value="3">Payer</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-3">
+            <div class="d-flex justify-content-end p-2">
+                <div class="dropdown mx-1">
+                    <button class="btn btn-sm" style="background-color: black; color: blanchedalmond; opacity: 0.7;"
+                        type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-file-invoice mx-2"></i> Nouvelle Facture
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="{{ path('nouvelle_facture') }}">Model 1</a>
+                        </li>
+                        <li><a class="dropdown-item" href="{{ path('new_invoice') }}">Model 2</a></li>
+                        <li><a class="dropdown-item" href="{{ path('new_invoice') }}" data-bs-toggle="modal"
+                                data-bs-target="#modalForm">Importer Fichier</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ligne" style="background-color: #F70081; height: 2px; width: 100%;"></div>
+    <div class="row mt-2">
+        <div class="col-lg-12">
+            <div id="message"></div>
+            <div class="card">
+                <h5 class="card-title mt-2 p-2">List des factures </h5>
+                <div class="row">
+                    <div class="col-lg-11 mx-auto">
+                        <div class="table-responsive-sm table-responsive-md">
+                            <table class="table" id="table_facture">
+                                <thead>
+                                    <tr>
+                                        <th>N° Facture</th>
+                                        <th>Date</th>
+                                        <th>Date d'echeance</th>
+                                        <th>Nom du Client</th>
+                                        <th>TTC (Euro)</th>
+                                        <th>ETAT</th>
+                                        <th style="width: 30px;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for invoice in invoices %}
+                                    <tr id="fids{{invoice[0].id}}">
+                                        <td>{{invoice[0].ref}}</td>
+                                        <td>{{invoice[0].date}}</td>
+                                        <td>{{invoice[0].echeance}}</td>
+                                        <td>{{invoice[0].clent.nomClient}}</td>
+                                        <td>{{invoice.totalTTC}} €</td>
+                                        <td>
+                                            {% if invoice[0].etat== 0 %}
+                                            <span class=""><i class="fas fa-file-alt text-primary"></i></span>
+                                            {%endif %}
+                                            {% if invoice[0].etat== 1 %}
+                                            <span class="text-center"><i class="fas fa-mail-bulk text-dark"></i></span>
+                                            {%endif %}
+                                            {% if invoice[0].etat== 2 %}
+                                            <span class="text-center"><i class="fas fa-check text-success"></i></span>
+                                            {%endif %}
+                                            {% if invoice[0].etat== 3 %}
+                                            <span class="text-center"><i class="fas fa-check text-danger"></i></span>
+                                            {%endif %}
+                                        </td>
+                                        <td class="text-center" data-path="{{path('edit_facture',{'id':1})}}">
+                                            <div class="dropdown mx-1">
+                                                <a class="" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                                                    aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v text-dark"></i>
+                                                </a>
+                                                <ul class=" dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                    <li><a class="dropdown-item"
+                                                            onclick="supprimerFacture('{{invoice[0].id}}')"
+                                                            id="supprimerFac" data-id="{{invoice[0].id}}"
+                                                            data-path="{{path('supprimer_facture')}}"
+                                                            href="javascript:void(0)">Supprimer</a>
+                                                    </li>
+                                                    <li><a class="dropdown-item"
+                                                            href="{{path('edit_facture',{'id':invoice[0].id})}}">Modifier</a>
+                                                    </li>
+                                                    <li><a class="dropdown-item"
+                                                            href="{{path('ligne_facture',{'id':invoice[0].id})}}">Détail</a>
+                                                    </li>
+                                                    <li><a class="dropdown-item"
+                                                            href="{{path('print_invoice',{'id':invoice[0].id})}}">Imprimer</a>
+                                                    </li>
+                                                    <li><a class="dropdown-item"
+                                                            href="{{path('invoice_envoyer',{'id':invoice[0].id})}}">Envoyer</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="navigation">
+                    {{ knp_pagination_render(invoices) }}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="modalForm" tabindex="0" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id=" exampleModalLabel">Importer un fichier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" ENCTYPE="multipart/form-data" action="{{path('file_invoice')}}">
+                    <div class="mb-3 col-lg-5 mx-auto">
+                        <label class="form-label btn btn-file btn-primary">Ouvrir
+                            <input type="file" hidden class="form-control" id="file-facture" name="file-facture"
+                                placeholder="" />
+                        </label>
+
+                    </div>
+                    <div class="modal-footer d-block">
+                        <button type="submit" class="btn btn-warning float-end">Importer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+{% endblock %}

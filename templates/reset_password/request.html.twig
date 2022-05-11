@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reset your password{% endblock %}
+
+{% block body %}
+<style>
+    #form-login {
+        background-color: #fff;
+        border-top-left-radius: 100px;
+        border-bottom-right-radius: 100px;
+        height: 550px;
+        padding: 80px 40px;
+    }
+
+    .security-page {
+        background-image: url(../asset/img/bg-5.jpg);
+        background-size: cover;
+        position: absolute;
+        top: 0;
+        opacity: 1;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    .titre-pro {
+        font-size: 100%;
+        color: #000;
+        font-family: "Lucida Grande", Tahoma, Helvetica, Sans-Serif;
+    }
+</style>
+
+<div class="security-page">
+    <div class="container my-5">
+        <div class="row mt-5">
+            <div class="col-lg-4 mx-auto shadow mt-5" id="form-login">
+                {% for flashError in app.flashes('reset_password_error') %}
+                <div class="alert alert-danger" role="alert">{{ flashError }}</div>
+                {% endfor %}
+                <h1 class="title text-center" style="color: #F70081;">Réinitialiser mon Mot de passe</h1>
+
+                {{ form_start(requestForm) }}
+                {{ form_row(requestForm.email) }}
+                <div>
+                    <small>
+                        Entrez votre adresse e-mail et nous vous enverrons un
+                        lien pour réinitialiser votre mot de passe.
+                    </small>
+                </div>
+                <button class="btn btn-primary">Réinitialiser mon mot de passe</button>
+                {{ form_end(requestForm) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

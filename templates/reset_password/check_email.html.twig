@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}réinitialisation du mot de passe{% endblock %}
+
+{% block body %}
+<style>
+    .animationload {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #fff;
+        z-index: 999999;
+    }
+
+    .loader {
+        width: 200px;
+        height: 200px;
+        font-size: 24px;
+        text-align: center;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        background-image: url(../asset/img/preloader.gif);
+        background-repeat: no-repeat;
+        background-position: center;
+        margin: -100px 0 0 -100px;
+    }
+
+    /* 6 Home
+----------------------------------------------------------------------------- */
+    .main-home {
+        padding: 330px 0px 250px 0;
+        z-index: 1;
+        text-align: center;
+        position: relative;
+        font-size: 13px;
+        color: #fff;
+        background: #000;
+        min-height: 400px;
+    }
+
+    .home-page-photo {
+        background-image: url(../asset/img/bg-5.jpg);
+        background-size: cover;
+        z-index: -1;
+        position: absolute;
+        top: 0;
+        opacity: 0.50;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+</style>
+<div data-spy="scroll" data-offset="80">
+    <div data-spy="scroll" data-offset="80">
+        <!-- /HOME -->
+        <section class="main-home" id="home">
+            <div class="home-page-photo"></div> <!-- Background image -->
+            <div class="home__header-content">
+                <div>
+                    <h4>
+                        <p>
+                            Si un compte correspondant à votre adresse e-mail existe, un e-mail vient d'être envoyé
+                            contenant un lien que vous pouvez utiliser pour réinitialiser votre mot de passe.
+                            Ce lien expirera dans
+                            {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+                        </p>
+                        <p>Si vous ne recevez pas d'e-mail, veuillez vérifier votre dossier spam ou <a
+                                href="{{ path('app_forgot_password_request') }}">Réessayer</a>.</p>
+                    </h4>
+                </div>
+            </div>
+        </section>
+        {% endblock %}

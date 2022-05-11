@@ -1,0 +1,142 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}facture{% endblock %}
+
+{% block body %}
+<style>
+    .btn-pdf:hover,
+    .btn-pdf:focus,
+    .btn-pdf:active,
+    .btn-pdf.active {
+        color: rgb(78, 61, 61);
+        background-color: #00b3db;
+        border-color: #285e8e;
+        /*set the color you want here*/
+    }
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-3">
+            <ul class="list-group list-group-flush mt-5">
+                <li class="list-group-item">Factures de {{data.clent.prenomClient}} {{data.clent.nomClient}}</li>
+                {% for cli in factureClient %}
+                <a class="list-group-item" style="font-size: small;"
+                    href="{{path('ligne_facture',{'id':cli.id})}}">{{cli.ref}} du
+                    <span class="text-primary">{{cli.date}}</span>
+                </a>
+                {%endfor%}
+            </ul>
+        </div>
+        <div class="col-lg-9">
+            <div class="row mt-2">
+                <div class="d-flex bd-highlight mb-3">
+                    <div class="me-auto p-2 bd-highlight">
+
+                    </div>
+                    <div class="p-2 bd-highlight"><a href="{{path('print_invoice',{'id':data.id})}}"
+                            class="btn btn-pdf bg-primary text-white"><i class="fas fa-download"></i> Télecharger
+                            PDF</a>
+                        {% if data.etat == "2"%}
+                        <a href="{{path('print_invoice',{'id':data.id})}}" class="btn btn-pdf bg-white"><i
+                                class="fas fa-download"></i>
+                            Envoyer</a>
+                        {%endif%}
+                    </div>
+
+                </div>
+            </div>
+            <div class="" id="factureClient" style="background-color: #FFF; height: 600px;">
+                <div class="row">
+                    <div class="d-flex bd-highlight">
+                        <div class="p-2 bd-highlight mt-2"><i class="fas fa-user text-primary fa-lg mx-2"
+                                style="size: 30px;"></i>{{data.clent.prenomClient}}
+                            {{data.clent.nomClient}}</div>
+                        <div class="p-2 bd-highlight mt-2"><i class="fas fa-phone fa-lg text-success mx-2">
+                            </i>{{data.clent.tel}}/{{data.clent.tel2}}
+                            <i class="fas fa-house-user fa-lg text-dark mx-2"></i>{{data.clent.adresseFactureClient}}
+                        </div>
+                        <div class="ms-auto p-2 bd-highlight">
+                            <div class="d-flex">
+                                <P class="me-5 mt-2"><span class="mx-2">{{data.ref}}</span> <i
+                                        class="fas fa-calendar-alt text-primary"></i>
+                                    {{data.date}} au <i class="fas fa-calendar-check text-danger"> </i>
+                                    {{data.echeance}}
+                                </P>
+                                {%if data.etat== "0"%}
+                                <div class="bg-primary"
+                                    style="width: 100px;margin-top: -20px; margin-right: -8px; text-align: center;">
+                                    <p class="text-white" style="margin-top: 20px; font-size: large;"><i
+                                            class="fas fa-file-word mx-2"></i>Bruillion</p>
+                                </div>
+                                {%endif%}
+                                {%if data.etat== "1"%}
+                                <div class="bg-secondary"
+                                    style="width: 100px;margin-top: -20px; margin-right: -8px; text-align: center;">
+                                    <p class="text-white" style="margin-top: 20px;"><i
+                                            class="far fa-save mx-2"></i>Enregistrer
+                                    </p>
+                                </div>
+                                {%endif%}
+                                {%if data.etat== "2"%}
+                                <div class="bg-success"
+                                    style="width: 100px;margin-top: -20px; margin-right: -8px; text-align: center;">
+                                    <p style="margin-top: 20px; text-white"><i
+                                            class="far fa-share-square mx-2"></i>ENVOYER</p>
+                                </div>
+                                {%endif%}
+                                {%if data.etat=="3"%}
+                                <div class="bg-danger"
+                                    style="width: 100px;margin-top:-20px; margin-right: -8px;text-align: center;">
+                                    <p style="margin-top: 20px; text-white ">PAYE</p>
+                                </div>
+                                {%endif%}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="bg-dark" style="color: white;">
+                                    <th class="desc text-white">Description</th>
+                                    <th class="desc text-white">Qté.</th>
+                                    <th class="text-white">Prix Unit.</th>
+                                    <th class="text-white">Rémise</th>
+                                    <th class="text-white">TVA</th>
+                                    <th class="text-white">Total HT</th>
+                                    <th class="text-white">Total TTC</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in data.ligneFacture %}
+                                <tr>
+                                    <td class="desc">{{data.designation}}</td>
+                                    <td class="unit">{{data.qt}}</td>
+                                    <td class="qty">{{data.pu}} €</td>
+                                    <td class="total">{%if data.remise > 0 %}
+                                        {{data.remise}}%
+                                        {%else%}
+                                        -
+                                        {%endif%}</td>
+                                    <td class="total">{%if data.tva > 0 %}
+                                        {{data.remise}}%
+                                        {%else%}
+                                        -
+                                        {%endif%}
+                                    </td>
+                                    <td class="total">{{data.totalHT}} €</td>
+                                    <td class="total">{{data.totalTTC}} €</td>
+                                </tr>
+                                {%endfor%}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'layout.html.twig' %}
+{% block title %}nouveau client{% endblock %}
+{% block body %}
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex">
+                    <h5 class="p-2">Type de client</h5>
+                    <div class="p-2"><select id="client-type" class="form-select form-select-sm" >
+                        <option value="0">Client Particuliaire</option>
+                        <option value="1">Société</option>
+                    </select>
+                </div>
+                </div>
+            </div>
+            <div class="card-body">
+                {{ form_start(form)}}
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <h3 class="text-muted">Informations Client <input type="text" hidden value="{{type}}" id="type"></span></h3>
+                                <div id="client">
+                                    <div class="row">
+                                        <div class="col-lg-12">Nom</div>
+                                        <div class="col-lg-12">
+                                             {{ form_row(form.nomClient)}}
+                                             {{ form_row(form.prenomClient)}}
+                                        </div>
+                                    </div>
+                                </div>
+                                    <div id="societe">
+                                     <div class="row">
+                                         <div class="col-lg-12">Nom</div>
+                                         <div class="col-lg-12">
+                                            {{ form_row(form.nomSociete)}}
+                                            {{ form_row(form.titreEntrepriseClient)}}
+                                            {{ form_row(form.numeroDeSerieClient)}}
+                                       </div>
+                                 </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">Numéro</div>
+                                    <div class="col-lg-6"> {{ form_row(form.tel)}}</div>
+                                    <div class="col-lg-6">{{ form_row(form.tel2)}}</div>
+                                </div>
+                                {{ form_row(form.fixe)}}
+                                 <div class="row">
+                                    <div class="col-lg-12">E-mail</div>
+                                    <div class="col-lg-12">{{ form_row(form.email)}}</div> 
+                                 </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <h3 class="text-muted">Adresse du Client</h3>
+                               <div class="row">
+                                    <div class="col-lg-12">Adresse de facturation</div>
+                                     <div class="col-lg-12">{{ form_row(form.adresseFactureClient)}}</div>   
+                               </div>
+                                 <div class="row">
+                                    <div class="col-lg-12">Rue</div>
+                                    <div class="col-lg-12">
+                                        <div class="row">
+                                            <div class="col-lg-6">{{ form_row(form.nomRueClient)}}</div>
+                                            <div class="col-lg-6">{{ form_row(form.numRueClient)}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{ form_row(form.villeClient)}}
+                                {{ form_row(form.paysClient)}}
+                                {{ form_row(form.codePostalClient)}}
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save mx-2"></i>Enregistrer</button>
+                        </div>
+                    {{ form_end(form)}}
+                    </div> 
+                   </div>
+                </div> 
+                <script>
+                   if (document.getElementById("type").value === "0") {
+                       var societe = document.getElementById("societe");
+                       societe.hidden = true;
+                   } 
+                </script>
+{% endblock%}

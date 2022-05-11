@@ -1,0 +1,344 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}nouvel facture{% endblock %}
+
+{% block body %}
+<style>
+    .scroll {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+</style>
+
+<div class="container">
+    <form name="add_ligne" id="add_ligne" method="POST" class="form-inline" enctype="multipart/form-data">
+        <div class="col">
+            <div class="d-flex justify-content-center p-2">
+                <h5>NOUVELLE FACTURE</h5>
+                <p class="text-end text-primary mx-5" hidden>N°<span class="text-end" id="refV2" name="ref">FAC-
+                        {{num}}</span>
+                </p>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-lg-6 col-md-3 col-sm-12">
+                <div class="d-flex justify-content-start p-2">
+                    <input type="text" disabled id="prefixeV2" class="form-control-sm mx-1 col-md-6" name="prefixe"
+                        value="FAC">
+                    <a href="#" id="modif_prefV2" class="mx-1"><i class="fas fa-edit mt-2"></i></a>
+                    N° <input type="text" id="numV2" disabled class="form-control-sm mx-1 col-md-6" name="num"
+                        value="{{num}}">
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-9">
+                <div class="d-flex justify-content-end" id="redirect" data-path="{{path('invoice')}}">
+                    <button class="btn btn-outline-dark btn-sm mx-1" style="border-radius: 20px;"
+                        id="annulerV1">Annuler</button>
+                    <button class="btn btn-outline-primary btn-sm mx-1" style="border-radius: 20px;" type="button"
+                        onclick="factureBrouillon()" id="btn-brouillon"><i
+                            class="fas fa-save mx-1"></i>Brouillon</button>
+                    <a href="javascript::void(0)" id="save_invoice" style="border-radius: 20px;"
+                        data-path="{{path('enregister_facture')}}" onclick="factureEnregistrer()"
+                        class="btn btn-primary btn-sm mx-1"><i class="fas fa-check mx-2"></i></i>Enregistrer</a>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-1">
+            <div class="scroll" style="background-color: white;">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6" id="client">
+                            <div class="card" id="">
+                                <div class="card-body">
+                                    <div class="row">
+
+                                        <div class="col-lg-8 col-md-6 col-sm-12">
+                                            <label for="infos-client">Client</label>
+                                            <input list="infos" oninput="getClient()" onchange="completeCondition()"
+                                                type="text" PLACEHOLDER="Taper et sélectionner votre client"
+                                                id="nomClient" class="form-control form-control-sm" name="infos" />
+                                            <datalist id="infos">
+                                                <option value=""></option>
+                                            </datalist>
+                                        </div>
+                                        <div class="col-lg-4 col-md-6 col-sm-12">
+                                            <button type="button" style="border-radius: 20px;"
+                                                class="btn btn-primary me-md-2 btn-sm mt-4" data-mdb-toggle="modal"
+                                                data-mdb-target="#modal-client">
+                                                <i class="fas fa-user-plus mx-2"></i>Nouveau
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="invoice-info" id="" style="border-color: black; box-sizing: content-box;">
+                                <div class="invoice-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="date-facture" class="form-label">Date de facture</label>
+                                                {% set datenow = 'now'|date() %}
+                                                <input type="date" name="date" required value="{{datenow}}"
+                                                    class="form-control form-control-sm" onchange="completeEcheance()"
+                                                    id="date">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="condition-regle" class="form-label">Condition de
+                                                    réglement</label>
+                                                <select type="text" name="condition"
+                                                    class="form-control form-control-sm" required id="condition">
+                                                    <option><span class="text-muted"></span></option>
+                                                    <option>Condition 1</option>
+                                                    <option>Condition 2</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col"><label for="date-facture" class="form-label">Echéance</label>
+                                        </div>
+                                        <div class="col"><input type="date" name="echeance" required
+                                                class="form-control form-control-sm" id="echeance"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <table class="table table-striped mt-2">
+                                <thead>
+                                    <tr>
+                                        <th width="15%">Réf</th>
+                                        <th width="20%">Désignation</th>
+                                        <th>Qté</th>
+                                        <th>Prix Unit.
+                                        </th>
+                                        <th>Remise</th>
+                                        <th>% TVA</th>
+                                        <th>Total HT</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="my-line">
+                                    <tr class="tr_input">
+                                        <td><input contenteditable="true" list="listProd" required type="text"
+                                                name="ref[]" class="form-control form-control-sm productname item_name"
+                                                id="ref_1">
+                                            <datalist id="listProd">
+                                                <option value=""></option>
+                                            </datalist>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="produit[]" required
+                                                class="form-control form-control-sm produit" id="produit_1">
+                                        </td>
+                                        <td><input type="number" name="qt[]" required
+                                                class="form-control form-control-sm qt" id="qt_1">
+                                        </td>
+
+                                        <td>
+                                            <div class="input-group">
+                                                <span class="input-group-text">€</span>
+                                                <input type="text" name="prixUnit[]" id="prixUnit_1" required class=" form-control form-control-sm
+                                                    prixUnit" aria-label="Amount (to the nearest dollar)">
+                                                <span class="input-group-text">.00</span>
+                                            </div>
+                                        </td>
+                                        <td><input type="number" name="remise[]"
+                                                class="form-control form-control-sm remise" value="0" id="remise_1">
+                                        </td>
+                                        <td><input type="text" name="tva[]" class="form-control form-control-sm tva"
+                                                id="tva_1">
+                                        </td>
+                                        <td><input type="text" name="totalHT[]"
+                                                class="form-control form-control-sm totalHT" id="totalHT_1"></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-8">
+                                <a class="me-auto btn btn-primary btn-sm" style="border-radius: 20px;" id="add"><i
+                                        class="fas fa-plus mx-1"></i>Ajouter
+                                    une ligne</a>
+                                <div class="mt-5">
+                                    <label class="text-dark">Notes de bas de page</label>
+                                    <textarea class="form-control" name="note"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 ms-auto">
+                                <table class="total table table-striped" style="float: right">
+                                    <tbody>
+                                        <tr>
+                                            <td class="left" style="text-align: right">
+                                                <strong class="text-dark">Remise global</strong>
+                                            </td>
+                                            <td class="right" style="text-align: right"><span
+                                                    id="remise_globale">0</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="left" style="text-align: right">
+                                                <strong class="text-dark">Total HT</strong>
+                                            </td>
+                                            <td class="right" style="text-align: right"><span id="tht_txt">0</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="left" style="text-align: right">
+                                                <strong class="text-dark">Montant TVA</strong>
+                                            </td>
+                                            <td class="right" style="text-align: right"><span id="mt-tva">0</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="left" style="text-align: right">
+                                                <strong class="text-dark">NET A PAYER</strong>
+                                            </td>
+                                            <td class="right" style="text-align: right">
+                                                <strong class="text-dark"><span id="total_ttc">0</span></strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- Modal ajout -->
+<div class="modal fade" id="modal-client" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    <h5 class="text-center">Nouveau Client</h5>
+                </h5>
+                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="d-flex">
+                        <h5 class="p-2">Nature du client</h5>
+                        <div class="p-2"><select id="client-type" class="form-select form-select-sm">
+                                <option value="0">Particuliaire</option>
+                                <option value="1">Profesionnel</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="client-">
+                        <div class="form-outline mb-2">
+                            <input type="text" id="prenom" class="form-control" />
+                            <label class="form-label" for="prenom">Prénom</label>
+                        </div>
+                        <div class="form-outline mb-2">
+                            <input type="text" id="nom" class="form-control" />
+                            <label class="form-label" for="nom">Nom</label>
+                        </div>
+                    </div>
+                    <div id="societe" hidden>
+                        <div class="form-outline mb-2">
+                            <input type="text" id="nomSociete" class="form-control" />
+                            <label class="form-label" for="nomSociete">Nom de l'entreprise</label>
+                        </div>
+                        <div class="form-outline mb-2">
+                            <input type="text" id="titreSociete" class="form-control" />
+                            <label class="form-label" for="titreSciete">Titre de l'entreprise</label>
+                        </div>
+                        <div class="form-outline mb-2">
+                            <input type="text" id="numSerie" class="form-control" />
+                            <label class="form-label" for="numSerie">Numéro de Série</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-outline mb-2">
+                                <input type="text" id="portable1" name="portable1" class="form-control" />
+                                <label class="form-label" for="portable1">Portable 1</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-outline mb-2">
+                                <input type="text" id="portable2" name="portable2" class="form-control" />
+                                <label class="form-label" for="portable2">Portable 2</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-outline mb-2">
+                        <input type="text" id="fixe" class="form-control" />
+                        <label class="form-label" for="fixe">Fixe</label>
+                    </div>
+                    <div class="form-outline mb-2">
+                        <input type="text" id="email" class="form-control" />
+                        <label class="form-label" for="email">E-mail</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-outline mb-2">
+                                <input type="text" id="numRue" name="numRue" class="form-control" />
+                                <label class="form-label" for="numRue">Numéro Rue</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-outline mb-2">
+                                <input type="text" id="nomRue" name="nomRue" class="form-control" />
+                                <label class="form-label" for="nomRue">Nom rue</label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-outline mb-2">
+                                <input type="text" id="codePostal" name="codePostal" class="form-control" />
+                                <label class="form-label" for="codePostal">Code Postal</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-outline mb-2">
+                                <input type="text" id="ville" name="ville" class="form-control" />
+                                <label class="form-label" for="ville">Ville</label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-outline mb-2">
+                        <input type="text" id="pays" name="pays" class="form-control" />
+                        <label class="form-label" for="pays">Pays</label>
+                    </div>
+                    <div class="form-outline mb-2">
+                        <input type="text" id="adresse" name="andresse" class="form-control" />
+                        <label class="form-label" for="adresse">Adresse de facturation</label>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label" for="condition">Condition de paiement</label>
+                        <select class="form-control" name="condition" id="condition">
+                            <option value="15">15 Jours</option>
+                            <option value="30">30 Jours</option>
+                            <option value="45">45 Jours</option>
+                            <option value="60">60 Jours</option>
+                        </select>
+                    </div>
+
+                    <!-- Submit button -->
+                    <button type="button" id="V2-ajoutClient" data-path="{{path('V2_ajoutClient')}}"
+                        onclick="nouveauV2Client()" class="btn btn-primary mt-2 btn-block mb-4">Enregistrer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+</script>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+<style>
+    #form-login {
+        background-color: #fff;
+        border-top-left-radius: 100px;
+        border-bottom-right-radius: 100px;
+        height: 550px;
+        padding: 80px 40px;
+    }
+
+    .security-page {
+        background-image: url(../asset/img/bg-5.jpg);
+        background-size: cover;
+        position: absolute;
+        top: 0;
+        opacity: 1;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    .titre-pro {
+        font-size: 100%;
+        color: #000;
+        font-family: "Lucida Grande", Tahoma, Helvetica, Sans-Serif;
+    }
+</style>
+<div class="security-page">
+    <div class="container my-5">
+        <div class="row mt-5">
+            <div class="col-lg-4 mx-auto mt-5" id="form-login">
+                <form method="post" id="pro-login">
+                    {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
+
+                    {% if app.user %}
+                    <div class="mb-3">
+                        vous avez déjà connecté avec {{ app.user.username }}, <a href="{{ path('app_logout') }}"
+                            class="mx-2">Se déconnecter</a> <a href="{{path('invoice')}}">Facture</a>
+                    </div>
+                    {% endif %}
+
+                    <div class="col-md-12">
+                        <h3 class="title text-center" style="color: #F70081;">Se connecter</h3>
+                        <div class="text-center titre-pro">
+                            
+                        </div>
+                    </div>
+                    <label for=" email">Mail</label>
+                    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control"
+                        required>
+                    <small id="message-small"></small>
+                    <div>
+                        <label for="password">Mot de passe</label>
+                        <p><input type="password" name="password" id="inputPassword" class="form-control"
+                                autocomplete="current-password" required />
+                            <small id="message-small"></small>
+                        <p>
+                    </div>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                    <div class="checkbox mb-3 row mb-20px">
+                        <label>
+                            <input type="checkbox" name="_remember_me"> Se souvenir de moi
+                            <a href="{{path('app_forgot_password_request')}}" name="forgot_password" class="btn btn-link" style="text-decoration: none; text-transform: none;" id="forgot_password">Mot de passe oublié ?</a>
+                        </label>
+                         <label>
+                        </label>
+                    </div>
+                    <button class="btn btn-dark w-100  btn-sm mt-2" id="btn-connexion"
+                        style="background-color: #F70081; color: white;" type="submit">
+                        Connecter
+                    </button>
+                    <a href="{{path('app_register')}}" class="btn btn-dark w-100  btn-sm mt-2  text-warning"
+                        style="opacity: 0.7;" type="submit">
+                        S'inscrire
+                    </a>
+                   
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

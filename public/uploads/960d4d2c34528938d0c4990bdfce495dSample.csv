@@ -1,0 +1,5 @@
+ProductId,Quantity,PrixUnit
+1,2,400
+2,3,5000
+nomClient,modaliteDePaiement,numero,paiement,dateFacture
+rakoto,30,0,1,2012/12/12

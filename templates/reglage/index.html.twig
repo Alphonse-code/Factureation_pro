@@ -1,0 +1,341 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}reglage!{% endblock %}
+
+{% block body %}
+<style>
+    body {
+        background-color: #ddd;
+        font-family: 'Raleway';
+    }
+
+    .tabs {
+        width: 800px;
+        height: 250px;
+        background: #f5f5f5;
+        padding: 20px 30px;
+        overflow: hidden;
+        border-radius: 50px;
+        box-shadow: 5px 10px 5px #ccc;
+
+    }
+
+    .tabs .tabs-header {
+        height: 60px;
+        display: flex;
+        align-items: center;
+    }
+
+    .tabs .tabs-header>div {
+        width: calc(100%/ 4);
+        text-align: center;
+        color: #888;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 14px;
+        text-transform: uppercase;
+        outline: none;
+    }
+
+    .tabs .tabs-header>div>i {
+        display: block;
+        margin-bottom: 5px;
+
+    }
+
+    .tabs .tabs-header>div.active {
+        color: #00acce;
+
+    }
+
+    .tabs .tab-indicator {
+        width: calc(100%/4);
+        height: 5px;
+        background: #00acce;
+        left: 0px;
+
+    }
+
+    .tabs .tab-body {
+        position: relative;
+        height: calc(100% - 60px);
+        padding: 10px 5px;
+    }
+
+    .tabs .tab-body>div {
+        position: absolute;
+        top: -200px;
+        opacity: 0;
+        margin-top: 5px;
+        translate: scale(0.9);
+        transition: opacity 500ms ease-in-out 0ms,
+            transform 500ms ease-in-out 0ms;
+    }
+
+    .tabs .tab-body>div.active {
+        top: 0px;
+        opacity: 1;
+        transform: scale(1);
+        margin-top: 0px;
+    }
+
+    /* multiple page  */
+
+
+    .page .active-button {
+        display: table;
+        margin: auto;
+        padding-left: 0;
+    }
+
+    .page .active-button li {
+        display: inline-block;
+        width: 180px;
+    }
+
+    .page .active-button li .round-bnt {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: #ccc;
+        position: relative;
+        color: #000;
+        text-align: center;
+        font-family: 'poppins';
+        font-weight: 30px;
+        max-width: 100%;
+        line-height: 30px;
+        margin: auto;
+        display: block;
+        z-index: 1;
+    }
+
+    .page .active-button li.active .round-bnt {
+        background-color: palevioletred;
+        color: white;
+
+    }
+
+    .page .active-button li:not(:first-child) .round-bnt:before {
+        position: absolute;
+        width: 150px;
+        height: 3px;
+        content: "";
+        background-color: #ccc;
+        left: -150px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: -1;
+    }
+
+    .page .active-button li.active:not(:first-child) .round-bnt:before {
+        background-color: palevioletred;
+
+    }
+
+    .form-box:nth-child(2) {
+        display: none;
+    }
+
+    .form-box:nth-child(3) {
+        display: none;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 col-sm-6">
+            <div class="tabs">
+                <div class="tabs-header">
+                    <div class="active">
+                        <i class="fa fa-code"></i>
+                        Coordonnées
+                    </div>
+                    <div>
+                        <i class="fa fa-code"></i>
+                        Mode de paiement
+                    </div>
+                    <div>
+                        <i class="fa fa-code"></i>
+                        Type de facture
+                    </div>
+                    <div>
+                        <i class="fa fa-code"></i>
+                        Test
+                    </div>
+                </div>
+                <div class="tab-indicator"></div>
+                <div class="tab-body">
+                    <div class="active">
+                        <h2>Parametrer votre Coordonnées</h2>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Repellat beatae magnam temporibus incidunt nihil? Veniam quis distinctio magnam nisi magni?
+                            Consequatur accusantium error quaerat nostrum voluptas vitae maxime labore. Sequi?</p>
+                    </div>
+                    <div>
+                        <h2>Parametrer votre Coordonnées</h2>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Repellat beatae magnam temporibus incidunt nihil? Veniam quis distinctio magnam nisi magni?
+                            Consequatur accusantium error quaerat nostrum voluptas vitae maxime labore. Sequi?</p>
+                    </div>
+                    <div>
+                        <h2>Parametrer votre Coordonnées</h2>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Repellat beatae magnam temporibus incidunt nihil? Veniam quis distinctio magnam nisi magni?
+                            Consequatur accusantium error quaerat nostrum voluptas vitae maxime labore. Sequi?</p>
+                    </div>
+                    <div>
+                        <h2>Parametrer votre Coordonnées</h2>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Repellat beatae magnam temporibus incidunt nihil? Veniam quis distinctio magnam nisi magni?
+                            Consequatur accusantium error quaerat nostrum voluptas vitae maxime labore. Sequi?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-sm-12">
+            <!-- start -->
+            <div class="row mt-5 mx-5">
+                <div class="card mx-5 my-5">
+                    <div class="form-box">
+                        <div class="page">
+                            <ul class="active-button">
+                                <li class="active">
+                                    <span class="round-bnt">1</span>
+                                    <span class=""> Produit</span>
+                                </li>
+                                <li>
+                                    <span class="round-bnt">2</span>
+                                    <span class=""> Client</span>
+                                </li>
+                            </ul>
+                            <div class="row mt-2">
+                                <form>
+                                    <div class="form-outline mb-4">
+                                        <input type="text" id="nomProduit" class="form-control" />
+                                        <label class="form-label" for="nomProduit">Nom Produit</label>
+                                    </div>
+                                    <div class="form-outline mb-4">
+                                        <textarea class="form-control" id="comment" rows="4"></textarea>
+                                        <label class="form-label" for="comment">Commentaire</label>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-outline mb-4">
+                                                <input type="text" id="prixHT" name="prixUHT" class="form-control" />
+                                                <label class="form-label" for="prixUHT">Prix HT</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-outline mb-4">
+                                                <input type="text" id="prixTTC" name="prixTTC" class="form-control" />
+                                                <label class="form-label" for="prixTTC">Prix TTC</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label" for="prixbase">Prix basé sur</label>
+                                        <select class="form-control" name="prixbase" id="prixbase">
+                                            <option value="1">Prix TTC</option>
+                                            <option value="2">Prix HT</option>
+                                        </select>
+                                    </div>
+                                    <label class="" for="tva">TVA</label>
+                                    <select class="form-control" id="tva" name="tva">
+
+                                        <option value=""></option>
+
+                                        <option value="">Ajouter ou mdifier</option>
+                                    </select>
+
+                                </form>
+                            </div>
+
+                            <div class="d-flex justify-content-between my-2 btn-row">
+                                <input type="button" value="Suivant" id="next" class="btn btn-primary next mx-3 next">
+                            </div>
+                            <button type="button" class="tbt btn-danger" id="test">test</button>
+                        </div>
+                    </div>
+                    <div class="form-box">
+                        <div class="page">
+                            <ul class="active-button">
+                                <li class="active">
+                                    <span class="round-bnt">1</span>
+                                </li>
+                                <li>
+                                    <span class="round-bnt">2</span>
+                                </li>
+                            </ul>
+                            <div class="row">
+                                <form>
+                                    <div class="form-outline ">
+                                        <input type="text" id="nomProduit" class="form-control" />
+                                        <label class="form-label" for="nomProduit">Nom Produit</label>
+                                    </div>
+                                    <div class="form-outline ">
+                                        <textarea class="form-control" id="comment" rows="4"></textarea>
+                                        <label class="form-label" for="comment">Commentaire</label>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-outline ">
+                                                <input type="text" id="prixHT" name="prixUHT" class="form-control" />
+                                                <label class="form-label" for="prixUHT">Prix HT</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-outline ">
+                                                <input type="text" id="prixTTC" name="prixTTC" class="form-control" />
+                                                <label class="form-label" for="prixTTC">Prix TTC</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label" for="prixbase">Prix basé sur</label>
+                                        <select class="form-control" name="prixbase" id="prixbase">
+                                            <option value="1">Prix TTC</option>
+                                            <option value="2">Prix HT</option>
+                                        </select>
+                                    </div>
+                                    <label class="" for="tva">TVA</label>
+                                    <select class="form-control" id="tva" name="tva">
+
+                                        <option value=""></option>
+
+                                        <option value="">Ajouter ou mdifier</option>
+                                    </select>
+
+                                </form>
+                            </div>
+                            <div class="d-flex justify-content-end btn-row">
+                                <input type="button" value="Retour" class=" btn btn-primary prev">
+                                <input type="button" value="Valider" class="btn btn-success mx-3 submit">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <!-- end -->
+        </div>
+    </div>
+
+</div>
+<script>
+    let tabheader = document.getElementsByClassName("tabs-header")[0];
+    let tabindicator = document.getElementsByClassName("tab-indicator")[0];
+    let tabbody = document.getElementsByClassName("tab-body")[0];
+    let tabsPane = tabheader.getElementsByTagName("div");
+    for (let i = 0; i < tabsPane.length; i++) {
+        tabsPane[i].addEventListener("click", function () {
+            tabheader.getElementsByClassName("active")[0].classList.remove("active");
+            tabsPane[1].classList.add("active");
+            tabbody.getElementsByClassName("active")[0].classList.remove("active");
+            tabbody.getElementsByTagName("div")[i].classList.add("active");
+            tabindicator.style.left = "calc(calc(100 % / 4) * ${i})";
+        });
+    }
+
+</script>
+{% endblock %}

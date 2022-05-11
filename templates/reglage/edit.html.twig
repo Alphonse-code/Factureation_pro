@@ -1,0 +1,181 @@
+{% extends 'layout.html.twig' %}
+{% block title %}réglage{% endblock %}
+
+{% block body %}
+<style>
+    .form-step {
+        display: none;
+        transform-origin: top;
+        animation: animate 0.5s;
+    }
+
+    @keyframes animate {
+        from {
+            transform: scale(1, 0);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1, 1);
+            opacity: 1;
+        }
+    }
+
+    .form-step-active {
+        display: block;
+    }
+
+    .progressbar {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        counter-reset: step;
+    }
+
+    .progressbar::before,
+    .progress {
+        content: "";
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 4px;
+        width: 100%;
+        background-color: black;
+        z-index: -1;
+    }
+
+    .progress {
+        background-color: #F70081;
+        width: 0%;
+        transition: 0.3s;
+    }
+
+    .progress-step {
+        width: 2.1875rem;
+        height: 2.1875rem;
+        background-color: black;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+    }
+
+    .progress-step::before {
+        counter-increment: step;
+        content: counter(step);
+    }
+
+    .progress-step::after {
+        content: attr(data-title);
+        position: absolute;
+        top: calc(100% + 0.5rem);
+        font-size: 0.80rem;
+        color: brown;
+    }
+
+    .progress-step-active {
+        background-color: #F70081;
+        color: white;
+
+    }
+
+    .form {
+        margin: 0 auto;
+        padding: 1.5rem;
+        border: 1px solid #F70081;
+    }
+</style>
+<div class="container-fluid" data-path="{{path('get_all_param')}}" id="get-param">
+    <div class="row">
+        <div class="col-lg-6 mx-auto">
+            <h1 class="text-center">Ajout informations</h1>
+            {{ form_start(form, {'method': 'POST'}) }}
+            <div class="form">
+                <div class="progressbar">
+                    <div class="progress" id="progress"></div>
+                    <div class="progress-step progress-step-active" data-title="Infos"></div>
+                    <div class="progress-step" data-title="Adresse"></div>
+                    <div class="progress-step" data-title="Interlocuteur"></div>
+                </div>
+                <div class="form-step form-step-active mt-5">
+                    <div class="form-group">
+                        {{ form_row(form.logo, { 'label': 'Logo' }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.nomEntreprise, { 'label': 'Nom de L\'entreprise' }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.emailEntreprise, { 'label': 'Mail de L\'entreprise' }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.numSiret, { 'label': 'Numéro Siret' }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.numTVA, { 'label': 'Numéro TVA' }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.statJuridique, { 'label': 'Statut Juridique' }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.rcs, { 'label': 'RCS' }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.TVADefault, { 'label': 'TVA par defaut' }) }}
+                    </div>
+                    <div class="form-group text-end mt-2">
+                        <a href="#" type="button" class="btn btn-primary btn-sm btn-next">Suivant</a>
+                    </div>
+                </div>
+                <div class="form-step mt-5">
+                    <div class="form-group">
+                        {{ form_row(form.pays, { 'label': 'Pays' }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.adresse, { 'label': 'Andresse' }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.ville, { 'label': 'Ville' }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.codePostal, {'label': 'Code Postal' }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.siteWeb, { 'label': 'Site web' }) }}
+                    </div>
+                    <div class="form-group text-end mt-2">
+                        <a href="#" type="button" class="btn btn-prev btn-sm"
+                            style="background-color: #F70081; color: white;">Precédent</a>
+                        <a href="#" type="button" class="btn btn-primary btn-sm btn-next">Suivant</a>
+                    </div>
+                </div>
+
+                <div class="form-step mt-5">
+                    <div class="form-group">
+                        {{ form_row(form.interPrenom, { 'label': 'Prenom' }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.interNom, { 'label': 'Nom' }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.interEmail, { 'label': 'Mail' }) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.interPortable, { 'label': 'Portable' }) }}
+                    </div>
+                    <div class="form-group text-end mt-2">
+                        <a href="#" type="button" class="btn btn-prev btn-sm"
+                            style="background-color: #F70081; color: white;">Precédent</a>
+                        <input type="submit" class="btn btn-primary btn btn-sm" value="Enregistrer">
+                    </div>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+
+    </div>
+</div>
+<script>
+
+</script>
+{% endblock%}

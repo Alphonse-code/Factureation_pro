@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reset your password{% endblock %}
+
+{% block body %}
+<style>
+    #form-login {
+        background-color: #fff;
+        border-top-left-radius: 100px;
+        border-bottom-right-radius: 100px;
+        height: 550px;
+        padding: 80px 40px;
+    }
+
+    .security-page {
+        background-image: url(../asset/img/bg-5.jpg);
+        background-size: cover;
+        position: absolute;
+        top: 0;
+        opacity: 1;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    .titre-pro {
+        font-size: 100%;
+        color: #000;
+        font-family: "Lucida Grande", Tahoma, Helvetica, Sans-Serif;
+    }
+</style>
+
+<div class="security-page">
+    <div class="container my-5">
+        <div class="row mt-5">
+            <div class="col-lg-4 mx-auto mt-5" id="form-login">
+
+                <h4 class="title text-center" style="color: #F70081;">Réinitialiser votre mot de passe </h4>
+                {{ form_start(resetForm) }}
+                </br>
+                {{ form_row(resetForm.plainPassword) }}
+                 </br>
+                <button class="btn btn-primary">Réinitialiser mot de passe</button>
+                {{ form_end(resetForm) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

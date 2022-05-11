@@ -1,0 +1,400 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Hello InvoiceController!{% endblock %}
+
+{% block body %}
+<style>
+    .page {
+        display: none;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+    .form-step {
+        display: none;
+        transform-origin: top;
+        animation: animate 0.5s;
+    }
+
+    @keyframes animate {
+        from {
+            transform: scale(1, 0);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1, 1);
+            opacity: 1;
+        }
+    }
+
+    .form-step-active {
+        display: block;
+    }
+
+    .progressbar {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        counter-reset: step;
+    }
+
+    .progressbar::before,
+    .progress {
+        content: "";
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 4px;
+        width: 100%;
+        background-color: black;
+        z-index: -1;
+    }
+
+    .progress {
+        background-color: #F70081;
+        width: 0%;
+        transition: 0.3s;
+    }
+
+    .progress-step {
+        width: 2.1875rem;
+        height: 2.1875rem;
+        background-color: black;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+    }
+
+    .progress-step::before {
+        counter-increment: step;
+        content: counter(step);
+    }
+
+    .progress-step::after {
+        content: attr(data-title);
+        position: absolute;
+        top: calc(100% + 0.5rem);
+        font-size: 0.80rem;
+        color: brown;
+    }
+
+    .progress-step-active {
+        background-color: #F70081;
+        color: white;
+
+    }
+</style>
+<div class="row mt-2">
+    <form id="edit-form">
+        <div class="col-lg-12 mx-auto">
+            <div class="row">
+                <div class="d-inline p-2"><input type="text" disabled id="prefixeE" class="form-control-sm" value="FAC">
+                    <a href="#" id="modif_prefE" class=""><i class="fas fa-edit"></i></a>
+                    <input type="text" id="numE" disabled class="form-control-sm" value="{{facture.num}}">
+                    date<input type="date" id="dateE" onchange="completeEcheanceE()" class="form-control-sm mx-1"
+                        value="{{facture.date}}">
+                    date d'echéance <input type="date" id="echeanceE" class="form-control-sm mx-1"
+                        value="{{facture.echeance}}">
+                </div>
+            </div>
+            <div class="my-2" style="height: 5px; background-color:#F70081;opacity: 0.7; width: 100%;"></div>
+            <div class="form-step form-step-active">
+                <div class="card mt-2" style="box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;" id="">
+                    <div class="row">
+                        <div class="table-responsive-sm">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th width="15%">Réf.</th>
+                                        <th width="20%">Désignation</th>
+                                        <th>Qté</th>
+                                        <th><select>
+                                                <option>PU HT</option>
+                                                <option>PU TTC</option>
+                                            </select>
+                                        </th>
+                                        <th>Remise</th>
+                                        <th>% TVA</th>
+                                        <th>Total HT</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="my-line">
+                                    {% for ligne in facture.ligneFacture %}
+                                    <tr class="tr_input" hidden></tr>
+                                    <tr class="tr_input">
+                                        <td>
+                                            <input contenteditable="true" list="listProd" type="text" name="refE[]"
+                                                class="form-control form-control-sm productnameE item_nameE"
+                                                value="{{ligne.refProduit}}" data-id="" id="refE_{{loop.index}}">
+                                            <datalist id="listProd">
+                                                <option value=""></option>
+                                            </datalist>
+                                        </td>
+                                        <td><input type="text" name="produitE[]" value="{{ligne.designation}}"
+                                                class="form-control form-control-sm produit"
+                                                id="produitE_{{loop.index}}">
+                                        </td>
+                                        <td><input type="number" name="qtE[]" value="{{ligne.qt}}"
+                                                class="form-control form-control-sm qt" id="qtE_{{loop.index}}">
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <span class="input-group-text">€</span>
+
+                                                <input type="text" name="prixUnitE[]" value="{{ligne.pu}}"
+                                                    id="prixUnitE_{{loop.index}}"
+                                                    class=" form-control form-control-sm
+                                                                                                                                prixUnit"
+                                                    aria-label="Amount (to the nearest dollar)">
+
+                                                <span class="input-group-text">.00</span>
+                                            </div>
+                                        </td>
+                                        <td><input type="number" name="remiseE[]"
+                                                class="form-control form-control-sm remise" value="{{ligne.remise}}"
+                                                id="remiseE_1">
+                                        </td>
+                                        <td><input type="text" name="tvaE[]" value="{{ligne.tva}}"
+                                                class="form-control form-control-sm tva" id="tvaE_{{loop.index}}">
+                                        </td>
+                                        <td><input type="text" value="{{ligne.totalHT}}" name="totalHTE[]"
+                                                class="form-control form-control-sm totalHT"
+                                                id="totalHTE_{{loop.index}}">
+                                        </td>
+                                        <td><input type='button' value='X' class='btn btn-danger btn-sm btnX'></td>
+                                    </tr>
+                                    {%endfor%}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-lg-4">
+                            <a class="me-auto btn btn-primary btn-sm" id="addE"><i class="fas fa-plus mx-1"></i>Ajouter
+                                une ligne</a>
+                        </div>
+                        <div class="col-lg-8">
+                            <table class="total table table-striped" style="float: right">
+                                <tbody>
+                                    <tr>
+                                        <td class="left" style="text-align: right">
+                                            <strong class="text-dark">Remise global</strong>
+                                        </td>
+                                        <td class="right" style="text-align: right"><span id="remise_globaleE">0</span>
+                                        </td>
+                                        <td class="left" style="text-align: right">
+                                            <strong class="text-dark">Total HT</strong>
+                                        </td>
+                                        <td class="right" style="text-align: right"><span id="tht_txtE">0</span>
+                                        </td>
+                                        <td class="left" style="text-align: right">
+                                            <strong class="text-dark">Montant TVA</strong>
+                                        </td>
+                                        <td class="right" style="text-align: right"><span id="mt-tvaE">0</span>
+                                        </td>
+                                        <td class="left" style="text-align: right">
+                                            <strong class="text-dark">Net à payer</strong>
+                                        </td>
+                                        <td class="right" style="text-align: right">
+                                            <strong class="text-dark"><span id="total_ttcE">0</span></strong>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group text-end mt-2">
+                    <a href="#" type="button" class="btn btn-primary btn-sm btn-next">Suivant</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-step">
+
+            <div class="card mt-4 style=" box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;" id="">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <h5 class="p-2">Nature du client</h5>
+                        <div class="p-2"><select id="nature-client" class="form-select form-select-sm">
+                                <option value="0">Client Particuliaire</option>
+                                <option value="1">Client profesionnel</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-6">
+                            <div class="row mb-2">
+                                <div class="col-lg-6">
+                                    <label for="infos-client">Client/Entreprise</label>
+                                </div>
+                                <div class="col-lg-6">
+                                    <input list="infosE" oninput="getClientE()" onchange="getClientInfosE()"
+                                        value="{{facture.clent.nomClient}}" type="text"
+                                        PLACEHOLDER="Taper et sélectionner votre client" data-id="{{facture.clent.id}}"
+                                        id="nomClientE" class="form-control form-control-sm" name="infosE" />
+                                    <datalist id="infosE">
+                                        <option value="Gerer Client"></option>
+                                    </datalist>
+                                </div>
+                            </div>
+                            <div id="block-client">
+                                <div class="row mb-2">
+                                    <div class="col-lg-6">
+                                        <label for="tel">Prénom</label>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" value="{{facture.clent.prenomClient}}" name="prenomE"
+                                            class="form-control" id="prenomE">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="block-societe">
+                                <div class="row mb-2">
+                                    <div class="col-lg-6">
+                                        <label for="tel">Titre de l'entreprise</label>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" name="titreEntrepriseE" class="form-control"
+                                            id="titreEntrepriseE" value="{{facture.clent.titreEntrepriseClient}}">
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-lg-6">
+                                        <label for="tel">Numéro Série de l'entreprise</label>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" name="numSerieEntrepriseE"
+                                            value="{{facture.clent.numeroDeSerieClient}}" id="numSerieEntrepriseE">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-lg-6">
+                                    <label for="tel">Tél.</label>
+                                </div>
+                                <div class="col-lg-6">
+                                    <input type="text" value="{{facture.clent.tel}}" name="telE" class="form-control"
+                                        id="telE">
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-lg-6">
+                                    <label for="tel">Tél2.</label>
+                                </div>
+                                <div class="col-lg-6">
+                                    <input type="text" value="{{facture.clent.tel2}}" name="tel2E" class="form-control"
+                                        id="tel2E">
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-lg-6"><label>Fixe</label></div>
+                                <div class="col-lg-6"><input type="text" name="fixeE" value="{{facture.clent.fixe}}"
+                                        class="form-control" id="fixeE">
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-lg-6">
+                                    <label>Email</label>
+                                </div>
+                                <div class="col-lg-6">
+                                    <input type="text" name="emailE" value="{{facture.clent.email}}"
+                                        class="form-control" id="emailE">
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-lg-6">
+                                    <label>Condition de paiement(jours)</label>
+                                </div>
+                                <div class="col-lg-6">
+                                    <input type="text" value="{{facture.clent.coditionDePaiement}}" name="conditionE"
+                                        class="form-control" id="conditionE">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row mb-2">
+                                <div class="col-lg-3">
+                                    <label>Nom Rue</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="text" value="{{facture.clent.nomRueClient}}" name="nomRueE"
+                                        class="form-control" id="nomRueE">
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-lg-3">
+                                    <label>Num Rue</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="text" name="numRueE" value="{{facture.clent.numRueClient}}"
+                                        class="form-control" id="numRueE">
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-lg-3">
+                                    <label>Code Postal</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="text" name="codePostalE" value="{{facture.clent.codePostalClient}}"
+                                        class="form-control" id="codePostalE">
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-lg-3">
+                                    <label>Ville</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="text" name="villeE" value="{{facture.clent.villeClient}}"
+                                        class="form-control" id="villeE">
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-lg-3">
+                                    <label>Adresse de facturation</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="text" name="adresseFacturationE"
+                                        value="{{facture.clent.adresseFactureClient}}" class="form-control"
+                                        id="adresseFactureClientE">
+                                </div>
+
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-lg-3">
+                                    <label>Pays</label>
+                                </div>
+                                <div class="col-lg-9">
+                                    <input type="text" name="paysE" value="{{facture.clent.paysClient}}"
+                                        class="form-control" id="paysE">
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="inline float-end mt-1">
+                <a href="#" type="button" class="btn btn-prev btn-sm mx-1"
+                    style="background-color: #F70081; color: white;">Precédent</a>
+                <input type="button" class="btn btn-primary btn btn-sm" onclick="editerFacture()" id="btn-edit"
+                    value="Enregistrer">
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+<style>
+    #form-register {
+        background-color: #fff;
+        border-top-left-radius: 100px;
+        border-bottom-right-radius: 100px;
+        height: 550px;
+        padding: 80px 40px;
+    }
+
+    .registration {
+        background-image: url(../asset/img/bg-5.jpg);
+        background-size: cover;
+        position: absolute;
+        top: 0;
+        opacity: 1;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+</style>
+<div class="registration">
+    <div class="container  my-5">
+        <div class="row mt-5">
+            <div class="col-lg-5 mx-auto" id="form-register">
+                {% for flashError in app.flashes('verify_email_error') %}
+                <div class="alert alert-danger" role="alert">{{ flashError }}</div>
+                {% endfor %}
+                <div class="col-md-12">
+                    <h3 class="title text-center">Créer votre compte avec votre adresse Mail</h3>
+                    <hr>
+                    </hr>
+                </div>
+                {{ form_start(registrationForm) }}
+                <div class="form-group">
+                    <label>Mail</label>
+                    {{ form_row(registrationForm.email) }}
+                    <small id="message-small"></small>
+                    <div class="form-group">
+                        {{ form_row(registrationForm.plainPassword, {
+                        label: 'Mot de passe'
+                        }) }}
+                        <small id="message-password"></small>
+                    </div>
+                    {{ form_row(registrationForm.agreeTerms) }}
+                    <button type="submit" class="btn w-100"
+                        style="background-color: #F70081; color: white;">Enregistrer</button>
+                    <a href="{{path('app_login')}}" class="btn btn-dark w-100  btn-sm mt-2  text-warning"
+                        style="opacity: 0.7;" type="submit">
+                        CONNECTER
+                    </a>
+                    {{ form_end(registrationForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

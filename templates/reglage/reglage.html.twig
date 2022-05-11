@@ -1,0 +1,74 @@
+{% extends 'layout.html.twig' %}
+{% block title %}réglage{% endblock %}
+
+
+
+{% block body %}
+<style>
+
+</style>
+<div class="container-fluid" data-path="{{path('get_all_param')}}" id="get-param">
+    <div class="row">
+        {% for message in app.flashes('success') %}
+        <div class="alert alert-success" id="alert-success">
+            {{ message }}
+        </div>
+        {% endfor %}
+        <div class="col-lg-7 mx-auto">
+            <div class="d-flex justify-content-end my-2">
+
+                {%if param != null %}
+                <a href="{{path('update_reglage',{'id':param.id})}}" class="btn btn-socondary mx-2 btn-sm"><i
+                        class="fas fa-edit"></i>Modifier</a>
+                <a href="" id="paramDelete" data-path="{{path('delete_param',{'id':param.id})}}"
+                    class="btn btn-danger mx-2 btn-sm"><i class="fa fa-trash mx-1" aria-hidden="true"></i>Supprimer</a>
+                {% else %}
+                <!-- Click on Modal Button -->
+                <a href="{{path('creer_reglage')}}" class="btn btn-dark btn-sm" style="opacity: 0.7; color: white;"><i
+                        class="fas fa-plus"></i>
+                    Ajout Informations
+                </a>
+                {%endif %}
+            </div>
+            <div class="row" style="background-color: white; height:100%;" id="infos">
+                {%if param != null %}
+                <div class="col">
+                    <div class="row"><img src="{{asset('/uploads/'~ param.logo)}}"></img></div>
+                    <div class="d-flex justify-content-start">
+                        <ul>
+                            <li id="nomEntrepriseClient">{{param.nomEntreprise}}</li>
+                            <li><span id="codePostal">{{param.codePostal}}</span><span id="ville">{{param.ville}}</span>
+                            </li>
+                            <li id="pays">{{param.pays}}</li>
+                            <li id="emailEntreprise">{{param.emailEntreprise}}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col"></div>
+                <div class="d-flex justify-content-center" style="margin-top: 50px;">
+                    <ul class="text-center">
+                        <li>{{param.nomEntreprise}}
+
+                        </li><span id="addresseBas">{{param.adresse}}</span> , {{param.codePostal}} <span
+                            id="villeBas">{{param.ville}}</span></li>
+                        <li><span id="satatBas">{{param.statJuridique}}</span> - <span
+                                id="siretBas">Siret{{param.numSiret}}</span>
+                        </li>
+                        <li><span id="siteBas">{{param.siteWeb}}</span> - <span id="numTVABas">{{param.numTVA}}</span>
+                        </li>
+
+                    </ul>
+                </div>
+                {%endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    setTimeout(function () {
+        if ($('#alert-success').length > 0) {
+            $('#alert-success').remove();
+        }
+    }, 5000)
+</script>
+{% endblock%}

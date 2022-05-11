@@ -1,0 +1,213 @@
+{% extends 'layout.html.twig' %}
+{% block title %}mes produits
+{% endblock %}
+
+{% block body %}
+<style>
+	.main-menu-area .mg-tb-40 {
+		-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+		-webkit-text-size-adjust: 100%;
+		font-size: 14px;
+		line-height: 1.42857143;
+		color: #333;
+		font-family: 'Roboto', sans-serif;
+		font-weight: 400;
+		box-sizing: border-box;
+		margin: 40px 0;
+	}
+</style>
+<div class="container-fluid mt-2" id="produit-container" data-path="{{path('produit_ajax')}}">
+	<div class="row my-2">
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<div class="d-md-flex justify-content-md-start">
+				<div class="card">
+					<div class="card-body d-flex justify-content-between py-2">
+						<div class="input-group input-group-sm">
+							<span class="input-group-text border-0 px-1" id="basic-addon2">
+								<i class="fas fa-search fa-sm" style="color: #939597;"></i>
+							</span>
+							<input type="text" style="color: #F70081;" class="form-control form-control-sm rounded" id="filter" onkeyup="rechercheProduit()" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2"/>
+						</div>
+						<p class="mb-0 d-flex flex-row align-self-center" style="color: #939597;">
+							<span class="font-weight-bold pe-1" style="color: #F70081;" id="total_produit">{{total}}</span>produits</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<div class="d-flex justify-content-end">
+				<div class="dropdown">
+					<button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" disabled>
+						<i class="fas fa-file-invoice mx-2"></i>
+						Actions
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+						<li>
+							<a class="dropdown-item" id="supprimerProduit" data-path="{{path('supprimer_produit')}}" href="#">Supprimer</a>
+						</li>
+						<li>
+							<a class="dropdown-item" id="editProduitBtn" data-path="{{url('edit_pro')}}" href="#">Modifier</a>
+						</li>
+					</ul>
+				</div>
+				<button type="button" style="background-color: black; color: blanchedalmond; opacity: 0.7;" class="btn btn-sm mx-2" data-mdb-toggle="modal" data-mdb-target="#modal_prod">
+					<i class="fas fa-user-plus mx-2"></i>Nouveau Produit
+				</button>
+			</div>
+		</div>
+	</div>
+	<div class="ligne" style="background-color: #F70081; height: 2px; width: 100%;"></div>
+	<div class="row mt-2">
+		<div id="message"></div>
+		<div class="card">
+			<div class="table-responsive">
+				<table class="table table-striped" id="my-table">
+					<thead>
+						<tr>
+							<th scope="col"><input id="checkAllProduit" type="checkbox"></th>
+							<th>Réf.</th>
+							<th>Nom du Produit</th>
+							<th>Commentaire</th>
+							<th width="170px;">Prix Unit. HT</th>
+							<th>Prix Unit. TTC</th>
+
+						</tr>
+					</thead>
+					<tbody id="tbody_prod">
+						{% for produit in produits %}
+							<tr id="pid{{produit.id}}">
+								<td><input type="checkbox" name="ids" value="{{produit.id}}" class="checkproduit">
+								</td>
+								<td>{{produit.ref}}</td>
+								<td>{{produit.nomProduit}}</td>
+								<td>{{produit.comment}}</td>
+								<td>{{produit.prixUHT}}
+									€</td>
+								<td>{{produit.prixUTTC}}
+									€</td>
+							</tr>
+							{%endfor%}</tbody>
+					</tbody>
+				</table>
+				<div class="navigation">
+					{{ knp_pagination_render(produits) }}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal ajout -->
+	<div class="modal fade" id="modal_prod" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">
+						<h5 class="text-center">Produit ou Service</h5>
+					</h5>
+					<button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-outline mb-4">
+							<input type="text" id="nomProduit" class="form-control"/>
+							<label class="form-label" for="nomProduit">Nom Produit</label>
+							<small id="produit_message"></small>
+						</div>
+						<div class="form-outline mb-4">
+							<textarea class="form-control" id="comment" rows="4"></textarea>
+							<label class="form-label" for="comment">Commentaire</label>
+							<small id="comment_message"></small>
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-outline mb-4">
+									<input type="text" id="prixHT" name="prixUHT" class="form-control"/>
+									<label class="form-label" for="prixUHT">Prix HT</label>
+									<small id="prixHT_message"></small>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="form-outline mb-4">
+									<input type="text" id="prixTTC" name="prixTTC" class="form-control"/>
+									<label class="form-label" for="prixTTC">Prix TTC</label>
+									<small id="prixTTC_message"></small>
+								</div>
+							</div>
+						</div>
+						<div class="mb-4">
+							<label class="form-label" for="prixbase">Prix basé sur</label>
+							<select class="form-control" name="prixbase" id="prixbase">
+								<option value="0">Prix HT</option>
+								<option value="1">Prix TTC</option>
+
+							</select>
+							<small id="prixBase_message"></small>
+						</div>
+						<div class="form-outline mb-4">
+							<input type="text" class="form-control" name="tva" id="tva">
+							<label class="form-label" for="tva">TVA</label>
+						</div>
+
+						<small id="message_error"></small>
+						<!-- Submit button -->
+						<button type="button" id="btn-produit" onclick="ajoutProduit()" class="btn btn-primary mt-2 btn-block mb-4">Enregistrer</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- modal edit -->
+	<div class="modal fade" id="editProduit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">
+						<h5 class="text-center">Modifier un produit</h5>
+					</h5>
+					<button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group mb-4">
+							<label class="form-label" for="nomProduit">Nom Produit</label>
+							<input type="text" id="nomProduitE" class="form-control"/>
+						</div>
+						<input type="hidden" id="id" value="">
+						<div class="form-group mb-4">
+							<label class="form-label" for="comment">Commentaire</label>
+							<textarea class="form-control" id="commentE" rows="4"></textarea>
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group mb-4">
+									<label class="form-label" for="prixUHTE">Prix HT</label>
+									<input type="text" id="prixHTE" name="prixUHT" class="form-control"/>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="form-group mb-4">
+									<label class="form-label" for="prixTTCE">Prix TTC</label>
+									<input type="text" id="prixTTCE" name="prixTTC" class="form-control"/>
+								</div>
+							</div>
+						</div>
+						<div class="mb-4">
+							<label class="form-label" for="prixbaseE">Prix basé sur</label>
+							<select class="form-control" name="prixbase" id="prixbaseE">
+								<option value="1">Prix TTC</option>
+								<option value="0">Prix HT</option>
+							</select>
+						</div>
+						<label class="" for="tva">TVA</label>
+						<input
+						type="text" class="form-control" id="tvaE" name="tva">
+						<!-- Submit button -->
+						<button type="button" data-path="{{path('edit_action')}}" id="btnproduitE" onclick="editActionProduit()" class="btn btn-primary mt-2 btn-block mb-4">Modifier</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</div></div>{% endblock%}
